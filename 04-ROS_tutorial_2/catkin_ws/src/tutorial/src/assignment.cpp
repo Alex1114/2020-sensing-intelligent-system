@@ -49,15 +49,16 @@ bool serviceCb(tutorial::assignment::Request  &req,
     std::string tag1_str = "tag_", tag2_str = "tag_", parent = "camera_link";
     tag1_str += std::to_string(req.tag1_id);
     tag2_str += std::to_string(req.tag2_id);
+    std::cout << tag1_str << " " << tag2_str << std::endl;
     tf::TransformListener listener;
     tf::StampedTransform transform;
     try{
       if(listener.waitForTransform(tag1_str, tag2_str, 
-                                   ros::Time::now(), 
-                                   ros::Duration(5.0)))
+                                   ros::Time(0), 
+                                   ros::Duration(2.0)))
          {
          /************************************************************/
-        listener.lookupTransform("tag1_str", "tag2_str",ros::Time(0), transform);
+        listener.lookupTransform(tag1_str, tag2_str,ros::Time(0), transform);
  	 /************************************************************/}
       else{
         res.result = "Times out.";

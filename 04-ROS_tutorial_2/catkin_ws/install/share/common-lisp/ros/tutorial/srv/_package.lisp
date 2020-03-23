@@ -1,0 +1,15 @@
+(cl:defpackage tutorial-srv
+  (:use )
+  (:export
+   "ASSIGNMENT"
+   "<ASSIGNMENT-REQUEST>"
+   "ASSIGNMENT-REQUEST"
+   "<ASSIGNMENT-RESPONSE>"
+   "ASSIGNMENT-RESPONSE"
+   "MY_SERVICE"
+   "<MY_SERVICE-REQUEST>"
+   "MY_SERVICE-REQUEST"
+   "<MY_SERVICE-RESPONSE>"
+   "MY_SERVICE-RESPONSE"
+  ))
+

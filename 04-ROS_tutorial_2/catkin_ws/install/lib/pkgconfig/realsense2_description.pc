@@ -1,0 +1,8 @@
+prefix=/home/alex/sis_lab_all_2020/04-ROS_tutorial_2/catkin_ws/install
+
+Name: realsense2_description
+Description: Description of realsense2_description
+Version: 2.2.7
+Cflags: 
+Libs: -L/home/alex/sis_lab_all_2020/04-ROS_tutorial_2/catkin_ws/install/lib 
+Requires: 

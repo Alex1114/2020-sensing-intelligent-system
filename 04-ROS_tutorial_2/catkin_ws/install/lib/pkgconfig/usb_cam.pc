@@ -1,0 +1,8 @@
+prefix=/home/alex/sis_lab_all_2020/04-ROS_tutorial_2/catkin_ws/install
+
+Name: usb_cam
+Description: Description of usb_cam
+Version: 0.3.6
+Cflags: -I/home/alex/sis_lab_all_2020/04-ROS_tutorial_2/catkin_ws/install/include
+Libs: -L/home/alex/sis_lab_all_2020/04-ROS_tutorial_2/catkin_ws/install/lib -lusb_cam
+Requires: 
