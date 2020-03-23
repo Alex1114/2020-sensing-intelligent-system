@@ -1,0 +1,11 @@
+.catkin_workspace
+build/
+devel/
+.vscode
+catkin_ws/bin/
+catkin_ws/include/
+catkin_ws/lib/
+catkin_ws/share/
+.catkin_tools/
+CATKIN_IGNORE
+.vscode
