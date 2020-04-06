@@ -13,12 +13,12 @@ $ rosbag play lab5_bag.bag
 
 
 # Result
-## draw_contours
+## task1 - draw_contours
 ![1](figures/1.gif)  
 
 
-## detect_shape  
+## task2 - detect_shape  
 ![2](figures/2.gif)  
 
-## calculate_size 
+## task3 - calculate_size 
 ![3](figures/3.gif)  
