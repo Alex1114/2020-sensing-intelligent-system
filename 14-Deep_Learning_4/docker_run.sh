@@ -1,23 +1,58 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-# Setup the style of color
-RED='\033[0;31m'
-NC='\033[0m'
+ARGS=("$@")
 
-# Find current directory and transfer it to container directory for Docker
-current_dir="$(pwd)"
-host_dir="/home/$USER/"
-container_dir="/hosthome/"
-goal_dir=${current_dir//$host_dir/$container_dir}
-echo ${goal_dir}
-
-# Check the command 'nvidia-docker' is existing or not
-ret_code="$(command -v nvidia-docker)"
-if [ -z "$ret_code" ]
-then
-    printf "${RED}\"nvidia-docker\" is not found, so substitute docker. $NC\n"
-    docker run -it --rm -v /home/$USER:/hosthome -p 8888:8888 -w ${goal_dir} pytorch-jupyter 
-else
-    printf "Run \"nvidia-docker\"\n"
-    nvidia-docker run -it --rm -v /home/$USER:/hosthome -p 8888:8888 -w ${goal_dir} pytorch-jupyter 
+# Make sure processes in the container can connect to the x server
+# Necessary so gazebo can create a context for OpenGL rendering (even headless)
+XAUTH=/tmp/.docker.xauth
+if [ ! -f $XAUTH ]; then
+  xauth_list=$(xauth nlist $DISPLAY)
+  xauth_list=$(sed -e 's/^..../ffff/' <<<"$xauth_list")
+  if [ ! -z "$xauth_list" ]; then
+    echo "$xauth_list" | xauth -f $XAUTH nmerge -
+  else
+    touch $XAUTH
+  fi
+  chmod a+r $XAUTH
 fi
+
+# Prevent executing "docker run" when xauth failed.
+if [ ! -f $XAUTH ]; then
+  echo "[$XAUTH] was not properly created. Exiting..."
+  exit 1
+fi
+
+DOCKER_OPTS=
+
+# Get the current version of docker-ce
+# Strip leading stuff before the version number so it can be compared
+DOCKER_VER=$(dpkg-query -f='${Version}' --show docker-ce | sed 's/[0-9]://')
+if dpkg --compare-versions 19.03 gt "$DOCKER_VER"; then
+  echo "Docker version is less than 19.03, using nvidia-docker2 runtime"
+  if ! dpkg --list | grep nvidia-docker2; then
+    echo "Please either update docker-ce to a version greater than 19.03 or install nvidia-docker2"
+    exit 1
+  fi
+  DOCKER_OPTS="$DOCKER_OPTS --runtime=nvidia"
+else
+  echo "nvidia container toolkit"
+  DOCKER_OPTS="$DOCKER_OPTS --gpus all"
+fi
+
+docker run -it \
+  -e DISPLAY \
+  -e QT_X11_NO_MITSHM=1 \
+  -e XAUTHORITY=$XAUTH \
+  -v "$XAUTH:$XAUTH" \
+  -v "/home/$USER/sis_lab_all_2020:/home/sis_2020/sis_lab_all_2020" \
+  -v "/tmp/.X11-unix:/tmp/.X11-unix" \
+  -v "/etc/localtime:/etc/localtime:ro" \
+  -v "/dev:/dev" \
+  --name sis_2020 \
+  --network host \
+  --rm \
+  $DOCKER_OPTS \
+  --privileged \
+  --security-opt seccomp=unconfined \
+  argnctu/sis_2020:fcn \
+  bash

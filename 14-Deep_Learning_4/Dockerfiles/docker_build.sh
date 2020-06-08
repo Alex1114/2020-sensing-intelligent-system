@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-docker build -t pytorch-jupyter -f Dockerfile .
+docker build --rm -t argnctu/sis_2020:fcn .

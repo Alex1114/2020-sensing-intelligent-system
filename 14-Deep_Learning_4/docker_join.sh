@@ -5,7 +5,7 @@
 
 BASH_OPTION=bash
 
-IMG=pytorch-jupyter
+IMG=argnctu/sis_2020:fcn
 
 xhost +
 containerid=$(docker ps -aqf "ancestor=${IMG}") && echo $containerid
